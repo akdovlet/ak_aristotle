@@ -6,14 +6,14 @@
 #    By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 19:37:42 by akdovlet          #+#    #+#              #
-#    Updated: 2024/11/21 17:38:47 by akdovlet         ###   ########.fr        #
+#    Updated: 2024/11/23 15:45:48 by akdovlet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	:=	philo
 
-SRC		:=	lst_functions.c	\
-			main.c
+SRC		:=	main.c			\
+			atol.c
 SRC_DIR	:=	src
 BUILD	:=	.build
 SRC 	:=	$(addprefix $(SRC_DIR)/, $(SRC))
@@ -45,10 +45,10 @@ fclean: clean
 	@if [ -f $(NAME) ]; then $(RM) -rf $(NAME) && printf "\033[1;31m\tDeleted: $(NAME)\033[0m\n"; fi
 
 val: all
-	valgrind --leak-check=full --track-fds=yes --trace-children=yes ./${NAME}
+	valgrind --leak-check=full --track-fds=yes --trace-children=yes --tool=helgrind ./${NAME}
 
 full: all
-	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --trace-children=yes ./${NAME}
+	valgrind --leak-check=full --show-leak-kinds=all --track-fds=yes --trace-children=yes --tool=helgrind ./${NAME}
 
 re:
 	@make --no-print-directory fclean

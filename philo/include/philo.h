@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/11/21 17:17:33 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/11/24 19:02:41 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,31 @@
 // pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_unlock
 # include <stdio.h> // printf
 
-typedef struct s_table
+typedef struct s_philo
 {
-	int	philo_number;
-	struct s_table	*next;
-	struct s_table	*prev;
-}	t_table;
+	unsigned short	id;
+	pthread_t		thread;
+	pthread_mutex_t	meals_count;
+	pthread_mutex_t	fork;
+	pthread_mutex_t	dead;
+}	t_philo;
 
 typedef struct s_data
 {
-	int	philo_count;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	eat_count;
-	t_table	*first;
-	t_table	*last;
+	unsigned int	philo_count;
+	unsigned int	time_to_die;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
+	unsigned int	eat_count;
+	int				start_time;
 }	t_data;
+
+typedef struct	s_shared
+{
+	pthread_mutex_t	write;
+	pthread_mutex_t	end;
+}	t_shared;
+
+long	ak_atol(const char *restrict str, int *err);
 
 #endif
