@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/11/29 18:29:46 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/11/30 15:57:29 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 // pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_unlock
 # include <stdio.h> // printf
 # include <time.h>
+
 typedef struct s_data
 {
 	unsigned int	philo_count;
@@ -34,15 +35,16 @@ typedef struct s_data
 typedef struct s_philo
 {
 	unsigned short	id;
+	time_t			last_meal_time;
 	pthread_t		thread;
 	pthread_mutex_t	meals_count;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	fork_left;
-	pthread_mutex_t	fork_right
+	pthread_mutex_t	fork_right;
+	pthread_mutex_t	last_meal_mutex;
 	pthread_mutex_t	*start;
 	t_data			*data;
 }	t_philo;
-
 
 typedef struct	s_locks
 {

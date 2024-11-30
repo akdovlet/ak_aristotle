@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/11/29 17:32:45 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/11/30 16:21:19 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,42 @@ int	parse_values(char **av, int ac, t_data *data)
 	return (i);
 }
 
+double	convert_miliseconds(time_t sec, time_t usec)
+{
+	double	time_ms;
+
+	time_ms = sec * 1000LL + usec / 1000LL;
+	return (time_ms);
+}
+
+double	gettime_in_ms(void)
+{
+	struct timeval time;
+
+	gettimeofday(&time, NULL);
+	return (convert_miliseconds(time.tv_sec, time.tv_usec));
+}
+
+
+time_t	gettime_interval(struct timeval start, struct timeval end)
+{
+	return ((end.tv_sec * 1000000 + end.tv_usec) - 
+	(start.tv_sec * 1000000 + start.tv_usec));
+}
+
 void	*routine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	fprintf(stderr, "thread: waiting at barrier\n");
 	pthread_mutex_lock(philo->start);
-	fprintf(stderr, "thread: passed barrier\n");
 	pthread_mutex_unlock(philo->start);
+	pthread_mutex_lock(&philo->fork_left);
+	printf("%.f ms philosopher %d has taken a fork\n", gettime_in_ms(), philo->id);
+	pthread_mutex_lock(&philo->fork_right);
+	printf("%.f ms philosopher %d has taken a fork\n", gettime_in_ms(), philo->id);
+	pthread_mutex_unlock(&philo->fork_left);
+	pthread_mutex_unlock(&philo->fork_right);
 	return (NULL);
 }
 
@@ -49,9 +76,14 @@ t_philo	*setup_philosophers(t_data *data, t_lock *lock)
 		return (perror("philo: fatal: setup philosophers"), NULL);
 	while (i < data->philo_count)
 	{
-		pthread_mutex_init(&dinner[i].fork, NULL);
+		if (i < data->philo_count - 1)
+			dinner[i].fork_right = dinner[i + 1].fork_left;
+		else
+			dinner[i].fork_right = dinner[0].fork_left;
+		pthread_mutex_init(&dinner[i].fork_left, NULL);
 		pthread_mutex_init(&dinner[i].dead, NULL);
 		pthread_mutex_init(&dinner[i].meals_count, NULL);
+		dinner[i].id = i;
 		dinner[i].start = &lock->start;
 		dinner[i].data = data;
 		pthread_create(&dinner[i].thread, NULL, &routine, &dinner[i]);
@@ -91,9 +123,9 @@ int	main(int ac, char **av)
 	fprintf(stderr, "Start time is %ld\n", data.time.tv_usec);
 	pthread_mutex_unlock(&lock.start);
 	gettimeofday(&end, NULL);
-	fprintf(stderr, "Code ran for: %ld miliseconds\n", end.tv_usec - data.time.tv_usec);
 	fprintf(stderr, "Main thread: unlocked barrier\n");
 	for (unsigned int i = 0; i < data.philo_count; i++)
 		pthread_join(philo[i].thread, NULL);
+	fprintf(stderr, "Code ran for: %ld miliseconds\n", end.tv_usec - data.time.tv_usec);
 	return (0);
 }
