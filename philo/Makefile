@@ -6,7 +6,7 @@
 #    By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 19:37:42 by akdovlet          #+#    #+#              #
-#    Updated: 2024/11/23 15:45:48 by akdovlet         ###   ########.fr        #
+#    Updated: 2024/12/03 16:41:36 by akdovlet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ OBJ 	:=	$(patsubst $(SRC_DIR)/%.c, $(BUILD)/%.o, $(SRC))
 DEPS 	:=	$(OBJ:.o=.d)
 
 CC		:=	cc
-CFLAGS	:=	-Wall -Werror -Wextra -MMD -MP -Iinclude
+CFLAGS	:=	-Wall -Werror -Wextra -MMD -MP -Iinclude -g
 
 all: create_dirs $(NAME)
 

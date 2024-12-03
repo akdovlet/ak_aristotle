@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/11/30 15:57:29 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/03 16:42:43 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 typedef struct s_data
 {
 	unsigned int	philo_count;
+	unsigned int	monitors_count;
 	unsigned int	time_to_die;
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
@@ -40,9 +41,10 @@ typedef struct s_philo
 	pthread_mutex_t	meals_count;
 	pthread_mutex_t	dead;
 	pthread_mutex_t	fork_left;
-	pthread_mutex_t	fork_right;
 	pthread_mutex_t	last_meal_mutex;
+	pthread_mutex_t	*fork_right;
 	pthread_mutex_t	*start;
+	pthread_mutex_t *write;
 	t_data			*data;
 }	t_philo;
 
