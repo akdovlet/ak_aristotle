@@ -6,14 +6,18 @@
 #    By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 19:37:42 by akdovlet          #+#    #+#              #
-#    Updated: 2024/12/03 16:41:36 by akdovlet         ###   ########.fr        #
+#    Updated: 2024/12/06 15:52:36 by akdovlet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	:=	philo
 
-SRC		:=	main.c			\
-			atol.c
+SRC		:=	atol.c			\
+			main.c			\
+			routine.c		\
+			setup.c			\
+			time.c			\
+			clear.c
 SRC_DIR	:=	src
 BUILD	:=	.build
 SRC 	:=	$(addprefix $(SRC_DIR)/, $(SRC))
