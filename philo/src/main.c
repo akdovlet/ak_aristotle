@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/06 19:14:09 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/07 17:47:22 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ int	main(int ac, char **av)
 	t_data			data;
 	t_philo			*philo;
 	t_lock			lock;
+	pthread_t		monitor;
 
 	if (setup_data(av, ac, &data, &lock))
 		return (1);
@@ -70,7 +71,9 @@ int	main(int ac, char **av)
 	}
 	gettimeofday(&data.time, NULL);
 	pthread_mutex_unlock(&lock.start_mutex);
+	pthread_create(&monitor, NULL, &monitoring_routine, philo);
 	pthread_join_all(philo, data.philo_count);
+	pthread_join(monitor, NULL);
 	destroy_philo_mutex(philo, data.philo_count);
 	return (0);
 }

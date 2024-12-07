@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/06 17:28:58 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:38:14 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,26 +24,28 @@
 
 typedef struct s_data
 {
-	int	philo_count;
-	int	monitors_count;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	eat_count;
+	int				philo_count;
+	int				monitors_count;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				eat_count;
 	struct timeval	time;
 }	t_data;
 
 typedef struct	s_locks
 {
 	int				ate_count;
+	int				end;
+	pthread_mutex_t	ate_mutex;
 	pthread_mutex_t	start_mutex;
 	pthread_mutex_t	write_mutex;
-	pthread_mutex_t	ate_mutex;
 	pthread_mutex_t	end_mutex;
 }	t_lock;
 
 typedef struct s_philo
 {
+	int				dead;
 	int				id;
 	int				meals_nb;
 	time_t			last_meal_time;
@@ -77,5 +79,6 @@ struct timeval	gettime_val(void);
 /* routine.c */
 
 void	*routine(void *arg);
+void	*monitoring_routine(void *arg);
 
 #endif
