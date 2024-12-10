@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/07 16:38:14 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/10 16:15:34 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,9 @@ typedef struct s_philo
 	pthread_t		thread;
 	pthread_mutex_t	meals_count_mutex;
 	pthread_mutex_t	dead_mutex;
-	pthread_mutex_t	fork_left_mutex;
 	pthread_mutex_t	last_meal_mutex;
+	pthread_mutex_t	fork_left;
+	pthread_mutex_t	*fork_left_mutex;
 	pthread_mutex_t	*fork_right_mutex;
 	t_lock			*lock;
 	t_data			*data;
@@ -80,5 +81,10 @@ struct timeval	gettime_val(void);
 
 void	*routine(void *arg);
 void	*monitoring_routine(void *arg);
+int		is_dead(t_philo *philo);
+
+/* routine_2.c */
+
+void	*routine_2(void *arg);
 
 #endif
