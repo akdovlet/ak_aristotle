@@ -6,7 +6,7 @@
 #    By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 19:37:42 by akdovlet          #+#    #+#              #
-#    Updated: 2024/12/10 15:18:42 by akdovlet         ###   ########.fr        #
+#    Updated: 2024/12/11 18:53:04 by akdovlet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME	:=	philo
 
 SRC		:=	atol.c			\
 			main.c			\
+			monitor.c		\
 			routine_2.c		\
 			routine.c		\
 			setup.c			\

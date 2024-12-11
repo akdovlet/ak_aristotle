@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 16:15:34 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:04:46 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,9 @@ int		is_dead(t_philo *philo);
 /* routine_2.c */
 
 void	*routine_2(void *arg);
+
+/* monitor.c */
+
+void	*monitoring_routine(void *arg);
 
 #endif

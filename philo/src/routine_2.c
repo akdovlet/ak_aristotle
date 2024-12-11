@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:13:14 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 18:59:56 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:22:45 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,8 @@ void	*routine_2(void *arg)
 
 	end = 0;
 	philo = (t_philo *) arg;
-	barrier_wait(&philo->lock->start_mutex);
 	update_meal_time(philo);
+	barrier_wait(&philo->lock->start_mutex);
 	while (1)
 	{
 		if (is_dead(philo))

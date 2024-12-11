@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 18:30:28 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 18:55:53 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:23:35 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ time_t	hunger_time(time_t last)
 	gettimeofday(&curr_time, NULL);
 	interval = ((curr_time.tv_sec * 1000LL) + (curr_time.tv_usec / 1000)) -
 				last;
+	// fprintf(stderr, "last is: %ld and interval is: %ld\n", last, interval);
 	return (interval);
 	
 }
@@ -42,7 +43,7 @@ int	someone_died(t_philo *philo)
 	return (0);
 }
 
-int	check_finished_eating(t_philo *philo)
+static int	finished_eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->lock->ate_mutex);
 	if (philo->lock->ate_count >= philo->data->philo_count)
@@ -66,7 +67,7 @@ void	*monitoring_routine(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
-		if (check_finished_eating(&philo[i]))
+		if (finished_eating(&philo[i]))
 			break ;
 		if (someone_died(&philo[i]))
 			break ;
