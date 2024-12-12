@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 16:15:34 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/10 22:46:48 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ typedef struct	s_locks
 	int				ate_count;
 	int				end;
 	pthread_mutex_t	ate_mutex;
-	pthread_mutex_t	start_mutex;
+	pthread_mutex_t	barrier;
+	pthread_mutex_t monitor_barrier;
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t	end_mutex;
 }	t_lock;

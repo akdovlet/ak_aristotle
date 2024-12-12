@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 16:21:58 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/07 16:42:42 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/10 22:44:12 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	setup_locks(t_lock *locks)
 {
 	if (pthread_mutex_init(&locks->end_mutex, NULL))
 		return (printf("philo: mutex init error\n"), 1);
-	if (pthread_mutex_init(&locks->start_mutex, NULL))
+	if (pthread_mutex_init(&locks->barrier, NULL))
 	{
 		pthread_mutex_destroy(&locks->end_mutex);
 		return (printf("philo: mutex init error\n"), 1);
@@ -40,7 +40,7 @@ int	setup_locks(t_lock *locks)
 	if (pthread_mutex_init(&locks->write_mutex, NULL))
 	{
 		pthread_mutex_destroy(&locks->end_mutex);
-		pthread_mutex_destroy(&locks->start_mutex);
+		pthread_mutex_destroy(&locks->barrier);
 		return (printf("philo: mutex init error\n"), 1);
 	}
 	return (0);

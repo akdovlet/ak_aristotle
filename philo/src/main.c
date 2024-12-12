@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 17:32:47 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/10 22:34:50 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,23 +65,23 @@ int	main(int ac, char **av)
 {
 	t_data			data;
 	t_lock			lock;
-	// pthread_t		monitor;
+	pthread_t		monitor;
 	t_philo			*philo;
 
 	if (setup_data(av, ac, &data, &lock))
 		return (1);
-	pthread_mutex_lock(&lock.start_mutex);
+	pthread_mutex_lock(&lock.barrier);
 	philo = setup_philosophers(&data, &lock);
 	if (!philo)
 	{
-		pthread_mutex_unlock(&lock.start_mutex);
+		pthread_mutex_unlock(&lock.barrier);
 		return (destroy_locks(&lock), 1);
 	}
 	gettimeofday(&data.time, NULL);
-	pthread_mutex_unlock(&lock.start_mutex);
-	// pthread_create(&monitor, NULL, &monitoring_routine, philo);
+	pthread_mutex_unlock(&lock.barrier);
+	pthread_create(&monitor, NULL, &monitoring_routine, philo);
 	pthread_join_all(philo, data.philo_count);
-	// pthread_join(monitor, NULL);
+	pthread_join(monitor, NULL);
 	destroy_philo_mutex(philo, data.philo_count);
 	return (0);
 }

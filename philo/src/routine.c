@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 15:51:28 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 18:55:43 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/10 22:34:50 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,11 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	pthread_mutex_lock(&philo->lock->start_mutex);
+	pthread_mutex_lock(&philo->lock->barrier);
 	pthread_mutex_lock(&philo->last_meal_mutex);
 	philo->last_meal_time = gettime_in_ms();
 	pthread_mutex_unlock(&philo->last_meal_mutex);
-	pthread_mutex_unlock(&philo->lock->start_mutex);
+	pthread_mutex_unlock(&philo->lock->barrier);
 	while (1)
 	{
 		if (is_dead(philo))

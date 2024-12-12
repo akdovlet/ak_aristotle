@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:13:14 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/10 18:59:56 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/10 22:58:34 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 void	is_thinking(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->lock->write_mutex);
-	printf("%-5ld ms philosopher %d is thinking\n", gettime_interval(&philo->data->time), philo->id);
+	printf("%8ld %d is thinking\n", gettime_interval(&philo->data->time), philo->id);
 	pthread_mutex_unlock(&philo->lock->write_mutex);
 }
 
 void	is_sleeping(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->lock->write_mutex);
-	printf("%-5ld ms philosopher %d is sleeping\n", gettime_interval(&philo->data->time), philo->id);
+	printf("%8ld %d is sleeping\n", gettime_interval(&philo->data->time), philo->id);
 	pthread_mutex_unlock(&philo->lock->write_mutex);
 }
 
@@ -32,14 +32,14 @@ void	is_eating(t_philo *philo)
 	philo->last_meal_time = gettime_in_ms();
 	pthread_mutex_unlock(&philo->last_meal_mutex);
 	pthread_mutex_lock(&philo->lock->write_mutex);
-	printf("%-5ld ms philosopher %d is eating\n", gettime_interval(&philo->data->time), philo->id);
+	printf("%8ld %d is eating\n", gettime_interval(&philo->data->time), philo->id);
 	pthread_mutex_unlock(&philo->lock->write_mutex);	
 }
 
 void	is_strapped(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->lock->write_mutex);
-	printf("%-5ld ms philosopher %d has picked up a fork\n", gettime_interval(&philo->data->time), philo->id);
+	printf("%8ld %d has picked up a fork\n", gettime_interval(&philo->data->time), philo->id);
 	pthread_mutex_unlock(&philo->lock->write_mutex);
 }
 
@@ -85,7 +85,7 @@ void	barrier_wait(pthread_mutex_t *barrier)
 void	finished_eating(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->lock->write_mutex);
-	printf("%-5ld ms philosopher %d has finished eating\n", gettime_interval(&philo->data->time), philo->id);
+	printf("%8ld %d has finished eating\n", gettime_interval(&philo->data->time), philo->id);
 	pthread_mutex_unlock(&philo->lock->write_mutex);
 }
 
@@ -122,8 +122,10 @@ void	*routine_2(void *arg)
 
 	end = 0;
 	philo = (t_philo *) arg;
-	barrier_wait(&philo->lock->start_mutex);
 	update_meal_time(philo);
+	barrier_wait(&philo->lock->barrier);
+	pthread_mutex_lock(&philo->lock->monitor_barrier);
+	pthread_mutex_unlock(&philo->lock->monitor_barrier);
 	while (1)
 	{
 		if (is_dead(philo))
@@ -135,11 +137,15 @@ void	*routine_2(void *arg)
 			usleep(philo->data->time_to_eat * 1000);
 			end = update_meal_count(philo);
 		}
+		else
+			break ;
 		unlocking_sequence(philo);
-		if (end)
+		if (end || is_dead(philo))
 			break ;
 		is_sleeping(philo);
 		usleep(philo->data->time_to_sleep * 1000);
+		if (is_dead(philo))
+			break ;
 		is_thinking(philo);
 	}
 	return (NULL);
