@@ -6,7 +6,7 @@
 #    By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 19:37:42 by akdovlet          #+#    #+#              #
-#    Updated: 2024/12/11 18:53:04 by akdovlet         ###   ########.fr        #
+#    Updated: 2024/12/12 17:58:35 by akdovlet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,8 @@ NAME	:=	philo
 SRC		:=	atol.c			\
 			main.c			\
 			monitor.c		\
-			routine_2.c		\
+			routine_sequence.c	\
+			routine_state.c	\
 			routine.c		\
 			setup.c			\
 			time.c			\
@@ -27,7 +28,7 @@ OBJ 	:=	$(patsubst $(SRC_DIR)/%.c, $(BUILD)/%.o, $(SRC))
 DEPS 	:=	$(OBJ:.o=.d)
 
 CC		:=	cc
-CFLAGS	:=	-Wall -Werror -Wextra -MMD -MP -Iinclude -g
+CFLAGS	:=	-Wall -Werror -Wextra -MMD -MP -Iinclude -g -pthread
 
 all: create_dirs $(NAME)
 

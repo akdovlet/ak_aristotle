@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/11 19:04:46 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/12 18:15:43 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,16 @@
 # include <stdio.h> // printf
 # include <time.h>
 
+typedef enum e_state
+{
+	THINKING,
+	SLEEPING,
+	EATING
+}	t_state;
+
 typedef struct s_data
 {
 	int				philo_count;
-	int				monitors_count;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
@@ -38,20 +44,20 @@ typedef struct	s_locks
 	int				ate_count;
 	int				end;
 	pthread_mutex_t	ate_mutex;
-	pthread_mutex_t	start_mutex;
+	pthread_mutex_t	barrier;
 	pthread_mutex_t	write_mutex;
 	pthread_mutex_t	end_mutex;
 }	t_lock;
 
 typedef struct s_philo
 {
-	int				dead;
 	int				id;
-	int				meals_nb;
+	int				meals_count;
+	t_state			state;
 	time_t			last_meal_time;
 	pthread_t		thread;
+	pthread_mutex_t	state_mutex;
 	pthread_mutex_t	meals_count_mutex;
-	pthread_mutex_t	dead_mutex;
 	pthread_mutex_t	last_meal_mutex;
 	pthread_mutex_t	fork_left;
 	pthread_mutex_t	*fork_left_mutex;
@@ -79,16 +85,32 @@ struct timeval	gettime_val(void);
 
 /* routine.c */
 
-void	*routine(void *arg);
 void	*monitoring_routine(void *arg);
 int		is_dead(t_philo *philo);
 
-/* routine_2.c */
+/* routine.c */
 
-void	*routine_2(void *arg);
+void	*routine(void *arg);
+int		usleep_loop(t_philo *philo, int time);
 
 /* monitor.c */
 
 void	*monitoring_routine(void *arg);
+void	update_meal_time(t_philo *philo);
+void	update_meal_count(t_philo *philo);
+
+/* routine_state.c */
+
+int		is_thinking(t_philo *philo);
+int		is_sleeping(t_philo *philo);
+int		is_eating(t_philo *philo);
+int		is_strapped(t_philo *philo);
+int		is_dead(t_philo *philo);
+
+/* routine_sequence.c */
+
+int		eating_sequence(t_philo *philo);
+int		locking_sequence(t_philo *philo);
+void	unlocking_sequence(t_philo *philo);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 18:30:28 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/11 19:23:35 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:50:36 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,19 @@ time_t	hunger_time(time_t last)
 	gettimeofday(&curr_time, NULL);
 	interval = ((curr_time.tv_sec * 1000LL) + (curr_time.tv_usec / 1000)) -
 				last;
-	// fprintf(stderr, "last is: %ld and interval is: %ld\n", last, interval);
 	return (interval);
 	
 }
 
-int	someone_died(t_philo *philo)
+static int	someone_died(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->state_mutex);
+	if (philo->state == EATING)
+	{
+		pthread_mutex_unlock(&philo->state_mutex);
+		return (0);
+	}
+	pthread_mutex_unlock(&philo->state_mutex);
 	pthread_mutex_lock(&philo->last_meal_mutex);
 	if (hunger_time(philo->last_meal_time) >= philo->data->time_to_die)
 	{
@@ -34,7 +40,7 @@ int	someone_died(t_philo *philo)
 		philo->lock->end = 1;
 		pthread_mutex_unlock(&philo->lock->end_mutex);
 		pthread_mutex_lock(&philo->lock->write_mutex);
-		printf("%-4ld %d is dead\n", gettime_interval(&philo->data->time), philo->id);
+		printf("%8ld %d is dead\n", gettime_interval(&philo->data->time), philo->id);
 		pthread_mutex_unlock(&philo->lock->write_mutex);
 		pthread_mutex_unlock(&philo->last_meal_mutex);
 		return (1);
@@ -45,11 +51,13 @@ int	someone_died(t_philo *philo)
 
 static int	finished_eating(t_philo *philo)
 {
+	if (!philo->data->eat_count)
+		return (0);
 	pthread_mutex_lock(&philo->lock->ate_mutex);
 	if (philo->lock->ate_count >= philo->data->philo_count)
 	{
 		pthread_mutex_lock(&philo->lock->write_mutex);
-		printf("%-4ld all philosophers finished eating\n", gettime_interval(&philo->data->time));
+		printf("%8ld all philosophers finished eating\n", gettime_interval(&philo->data->time));
 		pthread_mutex_unlock(&philo->lock->write_mutex);
 		pthread_mutex_unlock(&philo->lock->ate_mutex);
 		return (1);
@@ -65,11 +73,14 @@ void	*monitoring_routine(void *arg)
 
 	i = 0;
 	philo = (t_philo *)arg;
+	pthread_mutex_lock(&philo[i].lock->barrier);
+	pthread_mutex_unlock(&philo[i].lock->barrier);
 	while (1)
 	{
-		if (finished_eating(&philo[i]))
-			break ;
+		usleep(100);
 		if (someone_died(&philo[i]))
+			break ;
+		if (finished_eating(&philo[i]))
 			break ;
 		if (philo[i].id == philo[i].data->philo_count)
 			i = 0;

@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/11 19:04:23 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:33:08 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ t_philo	*setup_philosophers(t_data *data, t_lock *lock)
 			dinner[i].fork_right_mutex = &dinner[i].fork_left;
 			pthread_mutex_init(dinner[i].fork_right_mutex, NULL);
 		}
-		pthread_mutex_init(&dinner[i].dead_mutex, NULL);
 		pthread_mutex_init(&dinner[i].meals_count_mutex, NULL);
 		pthread_mutex_init(&dinner[i].last_meal_mutex, NULL);
+		pthread_mutex_init(&dinner[i].state_mutex, NULL);
 		dinner[i].id = i + 1;
 		dinner[i].data = data;
 		dinner[i].lock = lock;
-		pthread_create(&dinner[i].thread, NULL, &routine_2, &dinner[i]);
+		pthread_create(&dinner[i].thread, NULL, &routine, &dinner[i]);
 		i++;
 	}
 	return (dinner);
@@ -70,16 +70,16 @@ int	main(int ac, char **av)
 
 	if (setup_data(av, ac, &data, &lock))
 		return (1);
-	pthread_mutex_lock(&lock.start_mutex);
+	pthread_mutex_lock(&lock.barrier);
 	philo = setup_philosophers(&data, &lock);
 	if (!philo)
 	{
-		pthread_mutex_unlock(&lock.start_mutex);
+		pthread_mutex_unlock(&lock.barrier);
 		return (destroy_locks(&lock), 1);
 	}
 	gettimeofday(&data.time, NULL);
-	pthread_mutex_unlock(&lock.start_mutex);
 	pthread_create(&monitor, NULL, &monitoring_routine, philo);
+	pthread_mutex_unlock(&lock.barrier);
 	pthread_join_all(philo, data.philo_count);
 	pthread_join(monitor, NULL);
 	destroy_philo_mutex(philo, data.philo_count);
