@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 17:53:40 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/12 18:26:28 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 09:53:18 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	is_sleeping(t_philo *philo)
 
 int	is_eating(t_philo *philo)
 {
-	update_meal_time(philo);
 	pthread_mutex_lock(&philo->state_mutex);
 	philo->state = EATING;
 	pthread_mutex_unlock(&philo->state_mutex);
