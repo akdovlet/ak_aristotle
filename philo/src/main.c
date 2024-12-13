@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/13 18:00:10 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 19:55:32 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ t_philo	*setup_philosophers(t_data *data, t_lock *lock)
 		else
 		{
 			if (data->philo_count > 1)
-				dinner[i].fork_left_mutex = &dinner[0].fork_left;
-			dinner[i].fork_right_mutex = &dinner[i].fork_left;
+				dinner[i].fork_left_mutex = &dinner[i].fork_left;
+			dinner[i].fork_right_mutex = &dinner[0].fork_left;
 			pthread_mutex_init(dinner[i].fork_right_mutex, NULL);
 		}
 		pthread_mutex_init(&dinner[i].meals_count_mutex, NULL);
