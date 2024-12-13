@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/12 17:33:08 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 18:00:10 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,32 @@
 t_philo	*setup_philosophers(t_data *data, t_lock *lock)
 {
 	t_philo	*dinner;
+	time_t	start;
 	int		i;
 
 	i = 0;
 	dinner = malloc(sizeof(t_philo) * data->philo_count);
 	if (!dinner)
 		return (perror("philo: fatal error: setup philosophers"), NULL);
+	start = gettime_in_ms();
+	data->time = start;
 	while (i < data->philo_count)
 	{
 		dinner[i] = (t_philo) {};
 		if (i < data->philo_count - 1)
 		{
-			dinner[i].fork_left_mutex = &dinner[i].fork_left;
-			dinner[i].fork_right_mutex = &dinner[i + 1].fork_left;
-			pthread_mutex_init(&dinner[i].fork_left, NULL);
+			if (i % 2 == 1)
+			{
+				dinner[i].fork_left_mutex = &dinner[i + 1].fork_left;
+				dinner[i].fork_right_mutex = &dinner[i].fork_left;
+				pthread_mutex_init(dinner[i].fork_right_mutex, NULL);
+			}
+			else
+			{
+				dinner[i].fork_left_mutex = &dinner[i].fork_left;
+				dinner[i].fork_right_mutex = &dinner[i + 1].fork_left;
+				pthread_mutex_init(&dinner[i].fork_left, NULL);
+			}
 		}
 		else
 		{
@@ -43,6 +55,7 @@ t_philo	*setup_philosophers(t_data *data, t_lock *lock)
 		dinner[i].id = i + 1;
 		dinner[i].data = data;
 		dinner[i].lock = lock;
+		dinner[i].last_meal_time = start;
 		pthread_create(&dinner[i].thread, NULL, &routine, &dinner[i]);
 		i++;
 	}
@@ -77,7 +90,6 @@ int	main(int ac, char **av)
 		pthread_mutex_unlock(&lock.barrier);
 		return (destroy_locks(&lock), 1);
 	}
-	gettimeofday(&data.time, NULL);
 	pthread_create(&monitor, NULL, &monitoring_routine, philo);
 	pthread_mutex_unlock(&lock.barrier);
 	pthread_join_all(philo, data.philo_count);

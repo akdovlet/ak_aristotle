@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 18:30:28 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/12 17:50:36 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 18:36:33 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,6 @@ time_t	hunger_time(time_t last)
 
 static int	someone_died(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->state_mutex);
-	if (philo->state == EATING)
-	{
-		pthread_mutex_unlock(&philo->state_mutex);
-		return (0);
-	}
-	pthread_mutex_unlock(&philo->state_mutex);
 	pthread_mutex_lock(&philo->last_meal_mutex);
 	if (hunger_time(philo->last_meal_time) >= philo->data->time_to_die)
 	{
@@ -40,7 +33,7 @@ static int	someone_died(t_philo *philo)
 		philo->lock->end = 1;
 		pthread_mutex_unlock(&philo->lock->end_mutex);
 		pthread_mutex_lock(&philo->lock->write_mutex);
-		printf("%8ld %d is dead\n", gettime_interval(&philo->data->time), philo->id);
+		printf("%ld %d died\n", gettime_interval(philo->data->time), philo->id);
 		pthread_mutex_unlock(&philo->lock->write_mutex);
 		pthread_mutex_unlock(&philo->last_meal_mutex);
 		return (1);
@@ -57,7 +50,10 @@ static int	finished_eating(t_philo *philo)
 	if (philo->lock->ate_count >= philo->data->philo_count)
 	{
 		pthread_mutex_lock(&philo->lock->write_mutex);
-		printf("%8ld all philosophers finished eating\n", gettime_interval(&philo->data->time));
+		pthread_mutex_lock(&philo->lock->end_mutex);
+		philo->lock->end = 1;
+		pthread_mutex_unlock(&philo->lock->end_mutex);
+		printf("%ld all philosophers finished eating\n", gettime_interval(philo->data->time));
 		pthread_mutex_unlock(&philo->lock->write_mutex);
 		pthread_mutex_unlock(&philo->lock->ate_mutex);
 		return (1);
@@ -77,7 +73,6 @@ void	*monitoring_routine(void *arg)
 	pthread_mutex_unlock(&philo[i].lock->barrier);
 	while (1)
 	{
-		usleep(100);
 		if (someone_died(&philo[i]))
 			break ;
 		if (finished_eating(&philo[i]))

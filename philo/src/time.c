@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 16:47:38 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/07 15:05:41 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 15:51:10 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ struct timeval gettime_val(void)
 	return (time);
 }
 
-time_t	gettime_interval(struct timeval *start)
+time_t	gettime_interval(time_t start)
 {
 	struct timeval current_time;
 	time_t			interval;
 
 	gettimeofday(&current_time, NULL);
 	interval = ((current_time.tv_sec * 1000LL) + (current_time.tv_usec / 1000)) 
-	- (((*start).tv_sec * 1000LL) + ((*start).tv_usec / 1000));
+	- start;
 	return (interval);
 }

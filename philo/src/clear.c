@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 16:51:13 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/12 17:24:04 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 18:31:40 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,12 @@ void	destroy_philo_mutex(t_philo *philo, int philo_count)
 	while (i < philo_count)
 	{
 		if (i < philo_count - 1)
-			pthread_mutex_destroy(philo[i].fork_left_mutex);
+		{
+			if (i % 2 == 1)
+				pthread_mutex_destroy(philo[i].fork_right_mutex);
+			else
+				pthread_mutex_destroy(philo[i].fork_left_mutex);
+		}
 		else
 			pthread_mutex_destroy(philo[i].fork_right_mutex);
 		pthread_mutex_destroy(&philo[i].last_meal_mutex);

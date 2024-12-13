@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 17:57:10 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/13 11:58:20 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 17:48:11 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int	eating_sequence(t_philo *philo)
 	if (!end)
 	{
 		is_eating(philo);
+		update_meal_time(philo);
 		if (usleep_loop(philo, philo->data->time_to_eat))
 		{
 			unlocking_sequence(philo);
 			return (1);
 		}
-		update_meal_time(philo);
 		update_meal_count(philo);
 		unlocking_sequence(philo);
 	}
@@ -59,7 +59,7 @@ int	locking_sequence(t_philo *philo)
 
 void	unlocking_sequence(t_philo *philo)
 {
+	pthread_mutex_unlock(philo->fork_right_mutex);
 	if (philo->fork_left_mutex)
 		pthread_mutex_unlock(philo->fork_left_mutex);
-	pthread_mutex_unlock(philo->fork_right_mutex);
 }

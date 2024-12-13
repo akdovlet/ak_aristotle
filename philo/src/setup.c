@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 16:21:58 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/12 17:24:04 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 18:48:30 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ int	parse_values(char **av, int ac, t_data *data)
 	data->time_to_sleep = ak_atol(av[4], &i);
 	if (ac > 5)
 		data->eat_count = ak_atol(av[5], &i);
+	if (data->philo_count % 2)
+	{
+		if (data->time_to_eat >= data->time_to_sleep)
+			data->time_to_think = (data->time_to_eat - data->time_to_sleep) + 50;
+	}
 	return (i);
 }
 

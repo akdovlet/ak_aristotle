@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:13:14 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/12 17:57:58 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/13 18:07:09 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,20 @@ void	update_meal_count(t_philo *philo)
 int	usleep_loop(t_philo *philo, int time)
 {
 	int	start;
+	int	sleep_time;
 
 	start = 0;
+	sleep_time = 50;
+	if (!time)
+		return (0);
 	while (start < time)
 	{
 		if (start + 50 > time)
-			start = time - start;
+			sleep_time = time - start;
 		else
-			start += 50;
-		usleep(start * 1000);
+			sleep_time = 50;
+		start += sleep_time;
+		usleep(sleep_time * 1000);
 		if (is_dead(philo))
 			return (1);
 	}
@@ -60,8 +65,9 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	update_meal_time(philo);
 	barrier_wait(&philo->lock->barrier);
+	if (philo->id % 2 == 1)
+		usleep((philo->data->time_to_eat / 2) * 1000);
 	while (1)
 	{
 		if (eating_sequence(philo))
@@ -70,7 +76,6 @@ void	*routine(void *arg)
 			break ;
 		if (usleep_loop(philo, philo->data->time_to_sleep))
 			break ;
-		usleep(philo->data->time_to_sleep * 1000);
 		if (is_thinking(philo))
 			break ;
 	}
