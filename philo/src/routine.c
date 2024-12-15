@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:13:14 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/13 18:07:09 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/15 13:37:48 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,12 @@ void	*routine(void *arg)
 	philo = (t_philo *) arg;
 	barrier_wait(&philo->lock->barrier);
 	if (philo->id % 2 == 1)
-		usleep((philo->data->time_to_eat / 2) * 1000);
+		usleep_loop(philo, (philo->data->time_to_eat / 2));
 	while (1)
 	{
 		if (eating_sequence(philo))
 			break ;
 		if (is_sleeping(philo))
-			break ;
-		if (usleep_loop(philo, philo->data->time_to_sleep))
 			break ;
 		if (is_thinking(philo))
 			break ;

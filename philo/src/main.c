@@ -6,61 +6,11 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:46:44 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/13 19:55:32 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/15 16:28:09 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-t_philo	*setup_philosophers(t_data *data, t_lock *lock)
-{
-	t_philo	*dinner;
-	time_t	start;
-	int		i;
-
-	i = 0;
-	dinner = malloc(sizeof(t_philo) * data->philo_count);
-	if (!dinner)
-		return (perror("philo: fatal error: setup philosophers"), NULL);
-	start = gettime_in_ms();
-	data->time = start;
-	while (i < data->philo_count)
-	{
-		dinner[i] = (t_philo) {};
-		if (i < data->philo_count - 1)
-		{
-			if (i % 2 == 1)
-			{
-				dinner[i].fork_left_mutex = &dinner[i + 1].fork_left;
-				dinner[i].fork_right_mutex = &dinner[i].fork_left;
-				pthread_mutex_init(dinner[i].fork_right_mutex, NULL);
-			}
-			else
-			{
-				dinner[i].fork_left_mutex = &dinner[i].fork_left;
-				dinner[i].fork_right_mutex = &dinner[i + 1].fork_left;
-				pthread_mutex_init(&dinner[i].fork_left, NULL);
-			}
-		}
-		else
-		{
-			if (data->philo_count > 1)
-				dinner[i].fork_left_mutex = &dinner[i].fork_left;
-			dinner[i].fork_right_mutex = &dinner[0].fork_left;
-			pthread_mutex_init(dinner[i].fork_right_mutex, NULL);
-		}
-		pthread_mutex_init(&dinner[i].meals_count_mutex, NULL);
-		pthread_mutex_init(&dinner[i].last_meal_mutex, NULL);
-		pthread_mutex_init(&dinner[i].state_mutex, NULL);
-		dinner[i].id = i + 1;
-		dinner[i].data = data;
-		dinner[i].lock = lock;
-		dinner[i].last_meal_time = start;
-		pthread_create(&dinner[i].thread, NULL, &routine, &dinner[i]);
-		i++;
-	}
-	return (dinner);
-}
 
 void	pthread_join_all(t_philo *philo, int philo_count)
 {

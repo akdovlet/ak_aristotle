@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 19:47:52 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/13 16:42:42 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/15 16:29:39 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 # include <stdlib.h> // malloc, free
 # include <sys/time.h> // gettimeofday
 # include <pthread.h> 	// pthread_create, pthread_detach, pthread_join
-// pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_unlock
+// pthread_mutex_init, pthread_mutex_destroy, 
+// pthread_mutex_lock, pthread_mutex_unlock
 # include <stdio.h> // printf
 # include <time.h>
 
@@ -33,7 +34,7 @@ typedef struct s_data
 	time_t			time;
 }	t_data;
 
-typedef struct	s_locks
+typedef struct s_locks
 {
 	int				ate_count;
 	int				end;
@@ -47,10 +48,9 @@ typedef struct s_philo
 {
 	int				id;
 	int				meals_count;
+	char			*test;
 	time_t			last_meal_time;
 	pthread_t		thread;
-	pthread_mutex_t	state_mutex;
-	pthread_mutex_t	meals_count_mutex;
 	pthread_mutex_t	last_meal_mutex;
 	pthread_mutex_t	fork_left;
 	pthread_mutex_t	*fork_left_mutex;
@@ -59,16 +59,16 @@ typedef struct s_philo
 	t_data			*data;
 }	t_philo;
 
-long	ak_atol(const char *restrict str, int *err);
+long			ak_atol(const char *restrict str, int *err);
 
 /* setup.c */
 
-int	setup_data(char **av, int ac, t_data *data, t_lock *locks);
+int				setup_data(char **av, int ac, t_data *data, t_lock *locks);
 
 /* time.c */
 
-time_t	gettime_interval(time_t start);
-double	gettime_in_ms(void);
+time_t			gettime_interval(time_t start);
+double			gettime_in_ms(void);
 
 /* clear.c */
 
@@ -78,32 +78,40 @@ struct timeval	gettime_val(void);
 
 /* routine.c */
 
-void	*monitoring_routine(void *arg);
-int		is_dead(t_philo *philo);
+void			*monitoring_routine(void *arg);
+int				is_dead(t_philo *philo);
 
 /* routine.c */
 
-void	*routine(void *arg);
-int		usleep_loop(t_philo *philo, int time);
+void			*routine(void *arg);
+int				usleep_loop(t_philo *philo, int time);
+
+/* setup_threads.c */
+
+t_philo			*setup_philosophers(t_data *data, t_lock *lock);
 
 /* monitor.c */
 
-void	*monitoring_routine(void *arg);
-void	update_meal_time(t_philo *philo);
-void	update_meal_count(t_philo *philo);
+void			*monitoring_routine(void *arg);
+void			update_meal_time(t_philo *philo);
+void			update_meal_count(t_philo *philo);
 
 /* routine_state.c */
 
-int		is_thinking(t_philo *philo);
-int		is_sleeping(t_philo *philo);
-int		is_eating(t_philo *philo);
-int		is_strapped(t_philo *philo);
-int		is_dead(t_philo *philo);
+int				is_thinking(t_philo *philo);
+int				is_sleeping(t_philo *philo);
+int				is_eating(t_philo *philo);
+int				is_strapped(t_philo *philo);
+int				is_dead(t_philo *philo);
 
 /* routine_sequence.c */
 
-int		eating_sequence(t_philo *philo);
-int		locking_sequence(t_philo *philo);
-void	unlocking_sequence(t_philo *philo);
+int				eating_sequence(t_philo *philo);
+int				locking_sequence(t_philo *philo);
+void			unlocking_sequence(t_philo *philo);
+
+/* link_data.c */
+
+void			link_data(t_philo *philo, t_data *data, t_lock *lock, int i);
 
 #endif

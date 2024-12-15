@@ -6,21 +6,23 @@
 #    By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/20 19:37:42 by akdovlet          #+#    #+#              #
-#    Updated: 2024/12/12 17:58:35 by akdovlet         ###   ########.fr        #
+#    Updated: 2024/12/15 15:27:11 by akdovlet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	:=	philo
 
 SRC		:=	atol.c			\
+			clear.c			\
+			link_data.c		\
 			main.c			\
 			monitor.c		\
 			routine_sequence.c	\
 			routine_state.c	\
 			routine.c		\
+			setup_threads.c	\
 			setup.c			\
-			time.c			\
-			clear.c
+			time.c
 SRC_DIR	:=	src
 BUILD	:=	.build
 SRC 	:=	$(addprefix $(SRC_DIR)/, $(SRC))

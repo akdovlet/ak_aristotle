@@ -6,7 +6,7 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 16:21:58 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/12/13 18:48:30 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/15 16:31:20 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	parse_values(char **av, int ac, t_data *data)
 	if (data->philo_count % 2)
 	{
 		if (data->time_to_eat >= data->time_to_sleep)
-			data->time_to_think = (data->time_to_eat - data->time_to_sleep) + 50;
+			data->time_to_think = (data->time_to_eat - data->time_to_sleep)
+				+ 50;
 	}
 	return (i);
 }
@@ -36,17 +37,17 @@ int	parse_values(char **av, int ac, t_data *data)
 int	setup_locks(t_lock *locks)
 {
 	if (pthread_mutex_init(&locks->end_mutex, NULL))
-		return (printf("philo: mutex init error\n"), 1);
+		return (printf("philo: fatal error: mutex init error\n"), 1);
 	if (pthread_mutex_init(&locks->barrier, NULL))
 	{
 		pthread_mutex_destroy(&locks->end_mutex);
-		return (printf("philo: mutex init error\n"), 1);
+		return (printf("philo: fatal error: mutex init error\n"), 1);
 	}
 	if (pthread_mutex_init(&locks->write_mutex, NULL))
 	{
 		pthread_mutex_destroy(&locks->end_mutex);
 		pthread_mutex_destroy(&locks->barrier);
-		return (printf("philo: mutex init error\n"), 1);
+		return (printf("philo: fatal error: mutex init error\n"), 1);
 	}
 	return (0);
 }
