@@ -6,12 +6,13 @@
 /*   By: akdovlet <akdovlet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 18:05:53 by akdovlet          #+#    #+#             */
-/*   Updated: 2024/11/23 16:45:32 by akdovlet         ###   ########.fr       */
+/*   Updated: 2024/12/15 17:25:33 by akdovlet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <limits.h>
 #include <unistd.h>
+#include "philo.h"
 
 int	ak_isnum(int c)
 {
@@ -40,18 +41,18 @@ long	ak_atol(const char *restrict str, int *err)
 		i++;
 	if (str[i] == '+' || str[i] == '-')
 		if (str[i++] == '-')
-			return (*err = 1, 1);
+			return (write(2, "philo: negative value\n", 23), *err = 1, 1);
 	while (str[i])
 	{
 		if (!ak_isnum(str[i]))
 			return (*err = 1, \
 			write(2, "philo: non numerical value\n", 28), -1);
+		nb = (nb * 10) + (str[i++] - '0');
 		if (nb * flip > INT_MAX || nb * flip < INT_MIN)
 		{
 			write(STDERR_FILENO, "philo: int overflow\n", 21);
 			return (*err = 1, -1);
 		}
-		nb = (nb * 10) + (str[i++] - '0');
 	}
 	return (nb * flip);
 }
